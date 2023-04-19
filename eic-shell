@@ -59,7 +59,9 @@ then
        cvmfs_config probe
    fi
 else
-    echo "cvmfs is not mounted on this machine. Please ssh into a suitable machine. Exiting"
+    echo "ERROR: cvmfs is not mounted on this machine"
+    echo "please ssh into a suitable machine" 
+    echo "use -m, for a list of machines, or -h for more help"
     exit 2
 fi
 
