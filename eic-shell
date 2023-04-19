@@ -1,0 +1,72 @@
+#!/bin/bash
+
+## capture environment setup for upgrades
+CONTAINER=jug_xl
+VERSION=nightly
+PREFIX=/cvmfs/singularity.opensciencegrid.org/eicweb
+
+SIF_DEFAULT="$PREFIX/$CONTAINER:$VERSION"
+
+function print_the_help {
+  echo "USAGE:  eic-shell [OPTIONS] [ -- COMMAND ]"
+  echo "OPTIONAL ARGUMENTS:"
+  echo "          -m,--machine    List machines with cvmfs mounted"
+  echo "          -h,--help       Print this message"
+  echo ""
+  echo "  Start the eic-shell containerized software environment (Singularity version)."
+  echo ""
+  echo "EXAMPLES: "
+  echo "  - Start an interactive shell: eic-shell" 
+  echo "  - Execute a single command:   eic-shell -- <COMMAND>"
+  echo ""
+  exit
+}
+
+function list_cvmfs_machines {
+    echo "List of machines in Glasgow with cvmfs mounted:"
+    echo "np-tau, np-chi, np-psi"
+    echo "cvmfs is also mounted on the farm"
+}
+
+while [ $# -gt 0 ]; do
+  key=$1
+  case $key in
+    -h|--help)
+      print_the_help
+      exit 0
+      ;;
+    -m|--machine)
+      list_cvmfs_machines
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "ERROR: unknown argument: $key"
+      echo "use --help for more info"
+      exit 1
+      ;;
+  esac
+done
+
+if [ -d /cvmfs ];
+then
+    echo "cvmfs mounted on system. Continuing."
+   if [ ! -d $PREFIX ]; then
+       "$PREFIX not found. Probing..."
+       cvmfs_config probe
+   fi
+else
+    echo "ERROR: cvmfs is not mounted on this machine"
+    echo "please ssh into a suitable machine" 
+    echo "use -m, for a list of machines, or -h for more help"
+    exit 2
+fi
+
+#probably not needed if not running install.sh user by user:
+#export EIC_SHELL_PREFIX=/usr/local
+
+export SINGULARITY_BINDPATH=/home,/scratch,/w
+${SINGULARITY:-/usr/bin/singularity} exec ${SINGULARITY_OPTIONS:-} ${SIF:-$SIF_DEFAULT} eic-shell $@
