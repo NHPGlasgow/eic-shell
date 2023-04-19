@@ -7,18 +7,6 @@ PREFIX=/cvmfs/singularity.opensciencegrid.org/eicweb
 
 SIF_DEFAULT="$PREFIX/$CONTAINER:$VERSION"
 
-if [ -d /cvmfs ];
-then
-    echo "cvmfs mounted on system. Continuing."
-   if [ ! -d $PREFIX ]; then
-       "$PREFIX not found. Probing..."
-       cvmfs_config probe
-   fi
-else
-    echo "cvmfs is not mounted on this machine. Please ssh into a suitable machine. Exiting"
-    exit 2
-fi
-
 function print_the_help {
   echo "USAGE:  eic-shell [OPTIONS] [ -- COMMAND ]"
   echo "OPTIONAL ARGUMENTS:"
@@ -28,15 +16,16 @@ function print_the_help {
   echo "  Start the eic-shell containerized software environment (Singularity version)."
   echo ""
   echo "EXAMPLES: "
-  echo "  - Start an interactive shell: ./eic-shell" 
-  echo "  - Execute a single command:   ./eic-shell -- <COMMAND>"
+  echo "  - Start an interactive shell: eic-shell" 
+  echo "  - Execute a single command:   eic-shell -- <COMMAND>"
   echo ""
   exit
 }
 
 function list_cvmfs_machines {
-    echo "List of machines in glasgow with cvmfs mounted:"
-    echo "LIST TBD"
+    echo "List of machines in Glasgow with cvmfs mounted:"
+    echo "np-tau, np-chi, np-psi"
+    echo "cvmfs is also mounted on the farm"
 }
 
 while [ $# -gt 0 ]; do
@@ -61,6 +50,18 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+
+if [ -d /cvmfs ];
+then
+    echo "cvmfs mounted on system. Continuing."
+   if [ ! -d $PREFIX ]; then
+       "$PREFIX not found. Probing..."
+       cvmfs_config probe
+   fi
+else
+    echo "cvmfs is not mounted on this machine. Please ssh into a suitable machine. Exiting"
+    exit 2
+fi
 
 #probably not needed if not running install.sh user by user:
 #export EIC_SHELL_PREFIX=/usr/local
