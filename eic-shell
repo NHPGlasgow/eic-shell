@@ -20,7 +20,7 @@ else
 fi
 
 function print_the_help {
-  echo "USAGE:  ./eic-shell [OPTIONS] [ -- COMMAND ]"
+  echo "USAGE:  eic-shell [OPTIONS] [ -- COMMAND ]"
   echo "OPTIONAL ARGUMENTS:"
   echo "          -m,--machine    List machines with cvmfs mounted"
   echo "          -h,--help       Print this message"
